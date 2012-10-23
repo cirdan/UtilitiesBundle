@@ -1,0 +1,5 @@
+services:
+    sf.twig.extension:
+        class: SF\UtilitiesBundle\Twig\SFTwigExtension
+        tags:
+            - { name: twig.extension }
