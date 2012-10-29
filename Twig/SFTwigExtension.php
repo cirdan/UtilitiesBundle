@@ -17,6 +17,7 @@ class SFTwigExtension extends \Twig_Extension
             'weekDay'  => new \Twig_Filter_Function('\SF\UtilitiesBundle\Twig\SFTwigExtension::weekDayFilter'),
             'monthDay'  => new \Twig_Filter_Function('\SF\UtilitiesBundle\Twig\SFTwigExtension::monthDayFilter'),
             'month'  => new \Twig_Filter_Function('\SF\UtilitiesBundle\Twig\SFTwigExtension::monthFilter'),
+            'stringShorten'  => new \Twig_Filter_Function('\SF\UtilitiesBundle\Twig\SFTwigExtension::stringShortenFilter'),
         );
     }
     
@@ -71,6 +72,27 @@ class SFTwigExtension extends \Twig_Extension
         //return $fmt->format($timestamp);
 
         return strftime("%A",$timestamp);
+    }
+
+    public static function stringShortenFilter($content, $maxCharacters=20, $showDots = "&hellip;", $stopAtSpace = true, $encoding = 'UTF-8')
+    {
+        if(mb_strlen($content, $encoding) > $maxCharacters) {
+            $nbHalf=floor($maxCharacters/2);
+            $start=mb_substr($content, 0, $nbHalf, $encoding);
+            $end=mb_substr($content, mb_strlen($content, $encoding)-$nbHalf, $nbHalf, $encoding);
+            return $start.$showDots.$end;
+
+            if(!$stopAtSpace) {
+                return mb_substr($content, 0, $maxCharacters, $encoding) . $showDots;
+            } else {
+                $toReturn = mb_substr($content, 0, $maxCharacters, $encoding);
+                $pos = mb_strrpos($toReturn, ' ', 0, $encoding);
+                $toReturn = mb_substr($toReturn, 0, $pos, $encoding) . $showDots;
+                return $toReturn;
+            }
+        } else {
+            return $content;
+        }
     }
 
     public function getName()
